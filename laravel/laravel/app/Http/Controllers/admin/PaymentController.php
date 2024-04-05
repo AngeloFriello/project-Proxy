@@ -7,6 +7,7 @@ use App\Http\Requests\PaymentStoreRequest;
 use App\Http\Requests\PaymentUpdateRequest;
 use App\Models\Cart;
 use App\Models\Payment;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -59,7 +60,7 @@ class PaymentController extends Controller
                     'product_price' => $data['product_price'][$key],
                 ];
                 // Salva il prodotto nel carrello
-                Cart::create($cartData);
+                Product::create($cartData);
             }
         }
         return redirect()->route('admin.payment.show', $new_payment->id);
@@ -73,60 +74,31 @@ class PaymentController extends Controller
 
     public function update(PaymentUpdateRequest $request, Payment $payment)
     {
+        $payment = Payment::findOrFail($payment->id);
 
+        // Ottieni i dati validati dal form
         $data = $request->validate($request->rules());
-
-        // $payment->update([
-        //     'client_name' => $data['client_name'],
-        //     'total_price' => $data['total_price'],
-        //     'description' => $data['description'],
-        // ]);
-
-
-        // foreach ($data['product_name'] as $key => $productName) {
-        //     // Verifica se il nome del prodotto è vuoto (potrebbe non essere necessario)
-
-        //         // Aggiorna o crea il prodotto nel carrello
-        //         $payment->cart()->updateOrCreate( ['product_name' => $productName],
-        //         [
-        //             'quantity' => $data['quantity'][$key],
-        //             'product_price' => $data['product_price'][$key]
-        //         ]);
-
-        // }
-
-
-        // Aggiornamento dei dati del pagamento
+    
+        // Elimina tutti i prodotti associati al pagamento
+        $payment->product()->delete();
+    
+        // Aggiorna i dati del pagamento
         $payment->update([
             'client_name' => $data['client_name'],
             'description' => $data['description'],
-            'total_price' => $data['total_price'],
+            // 'total_price' => $data['total_price'],
         ]);
-
+    
+        // Aggiungi i nuovi prodotti associati al pagamento
         foreach ($data['product_name'] as $index => $productName) {
-
-            $cartId = $data['cart_id'][$index] ?? null;
-            $cartItem = Cart::find($cartId);
-
-
-            if ($cartItem) {
-                $cartItem->update([
-                    'product_name' => $data['product_name'][$index],
-                    'quantity' => $data['quantity'][$index],
-                    'product_price' => $data['product_price'][$index],
-                ]);
-            } else {
-                // Altrimenti, crea un nuovo dettaglio del carrello
-                $newCartItem = new Cart([
-                    'product_name' => $data['product_name'][$index],
-                    'quantity' => $data['quantity'][$index],
-                    'product_price' => $data['product_price'][$index],
-                ]);
-                $payment->cart()->save($newCartItem);
-            }
+            $product = new Product([
+                'product_name' => $productName,
+                'quantity' => $data['quantity'][$index],
+                'product_price' => $data['product_price'][$index],
+            ]);
+            $payment->product()->save($product);
         }
-        $cartItem = Cart::delete($cartId);
-
+    
         return redirect()->route('admin.payment.show', $payment->id);
     }
 

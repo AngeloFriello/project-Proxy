@@ -13,16 +13,16 @@ class Payment extends Model
         'client_name',
         'description',
         'total_price',
-        'cart_id',
+        'product_id',
         'product_name',
         'product_price',
         'quantity',
         'user_id'
     ];
 
-    public function cart(){
+    public function product(){
 
-       return $this->hasMany(Cart::class);
+       return $this->hasMany(Product::class);
     }
 
     public function user(){

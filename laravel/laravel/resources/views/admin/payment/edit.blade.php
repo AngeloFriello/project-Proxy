@@ -24,7 +24,7 @@
                     <div id="productSections">
                         <!-- Qui verranno aggiunte dinamicamente le sezioni di aggiunta prodotti -->
 
-                        @foreach ($payment->cart as $product)
+                        @foreach ($payment->product as $product)
                             <div class="card p-3 m-3">
                                 <div class="mb-3 d-flex">
                                     <div class="px-3">
@@ -59,7 +59,7 @@
 
                     <div class="py-3">
                         <p id="totalPriceLabel">Prezzo Totale : </p>
-                        <input type="text" id="total_price" name="total_price" value="" readonly>
+                        <input type="text" id="total_price" name="total_price" value="20" readonly>
                     </div>
 
                     <button type="submit" id='submit'class="btn btn-primary">Submit</button>
@@ -123,13 +123,7 @@
             document.getElementById("productSections").appendChild(productSection);
             updateTotalPrice();
         });
-        // gestione dell'evento click per rimuovere il prodotto
 
-        // document.addEventListener("click", function (event) {
-        //     if (event.target.classList.contains("removeProductBtn")) {
-        //         event.target.closest(".card").remove(); // Rimuovi la sezione del prodotto più vicina
-        //     }
-        // });
 
         document.addEventListener("DOMContentLoaded", function() {
       

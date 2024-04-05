@@ -28,7 +28,7 @@ class PaymentUpdateRequest extends FormRequest
             'quantity' => 'required|max:255',
             'product_price' => 'required|max:255',
             'product_name' => 'required|max:255|array',
-            'cart_id.*' => 'required|exists:carts,id',
+            'product_id.*' => 'required|exists:carts,id',
         ];
     }
 }
