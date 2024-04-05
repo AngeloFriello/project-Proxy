@@ -2,6 +2,13 @@
 @section('content')
     <div class="container mt-5">
         <div class="row">
+            <form action="{{ route('admin.payments.search') }}" method="GET">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Cerca pagamenti..." name="keyword">
+                    <button class="btn btn-outline-secondary" type="submit">Cerca</button>
+                </div>
+            </form>
+            
             <table class="table">
                 <thead>
                   <tr>
@@ -32,11 +39,11 @@
                 </tbody>
               </table>
              
-                <div class="pagination d-flex justify-content-between">
+                {{-- <div class="pagination d-flex justify-content-between">
                     <div>
                         @if ($payments->currentPage() > 1)
                         <a class="btn btn-secondary"  href="{{ $payments->previousPageUrl() }}" class="pagination-link">&laquo; Previous</a>
-                    @endif
+                        @endif
                     </div>
                   
                     <div>
@@ -51,7 +58,7 @@
                         @endif
                     </div>
                   
-                </div>
+                </div> --}}
               </div>
                 <a href="{{route('admin.payment.create')}}" class="btn btn-primary">crea un nuovo pagamento</a>
             </div>

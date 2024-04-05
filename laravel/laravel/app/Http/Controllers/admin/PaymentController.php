@@ -84,17 +84,17 @@ class PaymentController extends Controller
 
         // Ottieni i dati validati dal form
         $data = $request->validate($request->rules());
-    
+
         // Elimina tutti i prodotti associati al pagamento
         $payment->product()->delete();
-    
+
         // Aggiorna i dati del pagamento
         $payment->update([
             'client_name' => $data['client_name'],
             'description' => $data['description'],
             // 'total_price' => $data['total_price'],
         ]);
-    
+
         // Aggiungi i nuovi prodotti associati al pagamento
         foreach ($data['product_name'] as $index => $productName) {
             $product = new Product([
@@ -104,7 +104,7 @@ class PaymentController extends Controller
             ]);
             $payment->product()->save($product);
         }
-    
+
         return redirect()->route('admin.payment.show', $payment->id);
     }
 
@@ -112,5 +112,24 @@ class PaymentController extends Controller
     {
         $payment->delete();
         return redirect()->route('admin.payment.index');
+    }
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+        $keyword = $request->input('keyword');
+
+        if ($user) {
+            $payments = Payment::where('user_id', $user->id)
+                ->where(function ($query) use ($keyword) {
+                    $query->where('client_name', 'LIKE', "%$keyword%")
+                        ->orWhere('description', 'LIKE', "%$keyword%");
+                })
+                ->get();
+        } else {
+            $payments = [];
+        }
+
+        return view('admin.payment.index', compact('payments'));
     }
 }

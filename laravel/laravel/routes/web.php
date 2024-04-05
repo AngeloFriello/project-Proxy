@@ -34,6 +34,7 @@ Route::middleware('auth')
     ->prefix('admin')
     ->group(function () {
         Route::resource('payment', PaymentController::class);
-        Route::resource('cart', CartController::class);
+        Route::get('/payments/search', 'App\Http\Controllers\Admin\PaymentController@search')->name('payments.search');
     });
+
 require __DIR__.'/auth.php';
