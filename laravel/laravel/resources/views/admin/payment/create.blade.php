@@ -16,8 +16,27 @@
                     </div>
                     <h3 class="p-3">Cart</h3>
 
-                    <div id="productSections">
+                    <div id="productSections" class="">
                         <!-- Qui verranno aggiunte dinamicamente le sezioni di aggiunta prodotti -->
+                        <div class="card p-3 m-3">
+                            <div class="mb-3 d-flex">
+                                <div class="px-3">
+                                    <label for="product_name" class="form-label">Add product</label>
+                                    <input type="text" class="form-control refresh" name="product_name[]">
+                                </div>
+                                <div class="px-3">
+                                    <label for="quantity" class="form-label">Quantity</label>
+                                    <input type="number" class="form-control refresh" name="quantity[]">
+                                </div>
+                                <div class="px-3">
+                                    <label for="product_price" class="form-label">Price</label>
+                                    <input type="number" class="form-control refresh" name="product_price[]" onchange="updateTotalPrice()">
+                                </div>
+                                <div class="px-3">
+                                    <button type="button" class="btn btn-danger removeProductBtn">Elimina Prodotto</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="py-3">
@@ -70,6 +89,7 @@
             // Aggiungi la nuova sezione di aggiunta prodotto al DOM
             document.getElementById("productSections").appendChild(productSection);
         });
+
         document.addEventListener("click", function(event) {
             if (event.target.classList.contains("removeProductBtn")) {
                 event.target.closest(".card").remove(); // Rimuovi la sezione del prodotto più vicina
@@ -93,17 +113,6 @@
             document.getElementById("total_price").value = totalPrice.toFixed(2);
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
         
-            let inputs = document.querySelectorAll('.refresh');
-
-        
-            inputs.forEach(function(input) {
-                input.addEventListener("input", function() {
-                    
-                    updateTotalPrice();
-                });
-            });
-        });
     </script>
 @endsection

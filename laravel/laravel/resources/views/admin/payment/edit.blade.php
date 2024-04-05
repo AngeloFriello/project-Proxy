@@ -59,7 +59,7 @@
 
                     <div class="py-3">
                         <p id="totalPriceLabel">Prezzo Totale : </p>
-                        <input type="text" id="total_price" name="total_price" value="20" readonly>
+                        <input type="text" id="total_price" name="total_price" value="" readonly>
                     </div>
 
                     <button type="submit" id='submit'class="btn btn-primary">Submit</button>
@@ -79,27 +79,12 @@
     </div>
 
     <script>
-        
-        function updateTotalPrice() {
-            var totalPrice = 0;
-            var productPrices = document.querySelectorAll('input[name="product_price[]"]');
-            var quantities = document.querySelectorAll('input[name="quantity[]"]');
-            var totalPriceRandom = document.getElementById("total_price");
-            productPrices.forEach(function(productPrice, index) {
-                var price = parseFloat(productPrice.value);
-                var quantity = parseInt(quantities[index].value);
-                totalPrice += price * quantity;
-                totalPriceRandom.value = totalPrice
-            });
-
-            document.getElementById("total_price").value = totalPrice.toFixed(2);
-        }
         document.getElementById("addProductBtn").addEventListener("click", function() {
             // Crea una nuova sezione di aggiunta prodotto
             var productSection = document.createElement("div");
             productSection.classList.add("card", "p-3", "m-3");
 
-            // Aggiunge gli input per il nuovo prodotto
+            // Aggiungi gli input per il nuovo prodotto
             productSection.innerHTML = `
             <div class="mb-3 d-flex">
                 <div class="px-3">
@@ -112,48 +97,15 @@
                 </div>
                 <div class="px-3">
                     <label for="product_price" class="form-label">Price</label>
-                    <input type="number" class="form-control refresh" name="product_price[]">
+                    <input type="number" class="form-control refresh" name="product_price[]" onchange="updateTotalPrice()">
                 </div>
                 <div class="px-3">
                     <button type="button" class="btn btn-danger removeProductBtn">Elimina Prodotto</button>
                 </div>
             </div>`;
 
-            // Aggiunge una nuova sezione di aggiunta prodotto al DOM
+            // Aggiungi la nuova sezione di aggiunta prodotto al DOM
             document.getElementById("productSections").appendChild(productSection);
-            updateTotalPrice();
-        });
-
-
-        document.addEventListener("DOMContentLoaded", function() {
-      
-
-            document.addEventListener("click", function(event) {
-                if (event.target.classList.contains("removeProductBtn")) {
-                    var productId = event.target.dataset.productId;
-                
-                    fetch("{{ url('admin/cart/destroy') }}/" + productId, {
-                            headers: {
-                                'X-CSRF-TOKEN': {{ csrf_token() }},
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                            },
-                            method: 'DELETE',
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                     
-                                event.target.closest(".productSection").remove();
-                            } else {
-                                console.error('Errore durante l\'eliminazione del prodotto:', response
-                                    .statusText);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Errore durante l\'eliminazione del prodotto:', error);
-                        });
-                }
-            });
         });
 
         document.addEventListener("click", function(event) {
@@ -165,19 +117,21 @@
 
 
 
+        function updateTotalPrice() {
+            var totalPrice = 0;
+            var productPrices = document.querySelectorAll('input[name="product_price[]"]');
+            var quantities = document.querySelectorAll('input[name="quantity[]"]');
 
-        document.addEventListener("DOMContentLoaded", function() {
-        
-            let inputs = document.querySelectorAll('.refresh');
-
-        
-            inputs.forEach(function(input) {
-                input.addEventListener("input", function() {
-                    
-                    updateTotalPrice();
-                });
+            productPrices.forEach(function(productPrice, index) {
+                var price = parseFloat(productPrice.value);
+                var quantity = parseInt(quantities[index].value);
+                totalPrice += price * quantity;
             });
-        });
+
+            document.getElementById("total_price").value = totalPrice.toFixed(2);
+        }
+
+        
     </script>
 
 @endsection

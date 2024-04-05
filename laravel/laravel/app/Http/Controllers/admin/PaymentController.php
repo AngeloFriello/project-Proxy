@@ -8,6 +8,7 @@ use App\Http\Requests\PaymentUpdateRequest;
 use App\Models\Cart;
 use App\Models\Payment;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,8 +17,9 @@ class PaymentController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $payments = null;
         if ($user) {
-            $payments = Payment::where('user_id', $user->id)->get();
+            $payments = Payment::where('user_id', $user->id)->paginate(10); // 10 è il numero di elementi per pagina
         }
         return view('admin.payment.index', compact('payments'));
     }
@@ -39,13 +41,17 @@ class PaymentController extends Controller
 
         $userID = auth()->user()->id;
 
+        $due_date = Carbon::now()->addMonth();
 
         $new_payment = Payment::create([
             'client_name' => $data['client_name'],
             'total_price' => $data['total_price'],
             'description' => $data['description'],
+            'paid' => false,
+            'due_date' => $due_date,
             'user_id' => $userID,
         ]);
+
 
         $payment_id = $new_payment->id;
 
