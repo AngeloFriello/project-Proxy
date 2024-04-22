@@ -10,17 +10,20 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'due_date',
         'client_name',
         'description',
-        'total_price',
+        'token',
         'product_id',
         'product_name',
+        'active',
+        'image',
         'product_price',
         'quantity',
         'user_id'
     ];
 
-    public function product(){
+    public function products(){
 
        return $this->hasMany(Product::class);
     }
@@ -28,4 +31,9 @@ class Payment extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public static function getStatusValues(){
+        return ['active','paid', 'rejected', 'sospended'];
+    }
+
 }

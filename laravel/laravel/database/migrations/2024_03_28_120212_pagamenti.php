@@ -16,10 +16,13 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('client_name', 255);
-            $table->integer('total_price');
-            $table->boolean('paid')->default(false);
-            $table->date('due_date')->default(Carbon::now()->addMonth());
+            $table->decimal('total_price', 7,2)->nullable();
+            $table->date('due_date')->nullable();
             $table->text('description');
+            $table->enum('status', ['paid', 'rejected', 'not_paid'])->default('not_paid');
+            $table->boolean('active')->default(false);
+            $table->text('response_status')->nullable();
+            $table->string('token')->unique()->nullable();
             $table->timestamps();
         });
     }

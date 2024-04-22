@@ -21,13 +21,18 @@ class PaymentStoreRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'client_name' => 'required|max:255|string',
-            'description' => 'required|max:600|string',
-            'total_price' => 'required|max:255',
-            'quantity' => 'required|max:255',
-            'product_price' => 'required|max:255',
-            'product_name' => 'required|max:255',
+            'description' => 'required|max:600|string',          
+            'products' => 'required|array|min:1',
+            'perPage' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'products.*.product_name' => 'nullable|max:255|string',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.product_price' => 'required|numeric|min:0',
+            'due_date' => 'nullable|date',
+            'active' => 'nullable',
         ];
     }
 }

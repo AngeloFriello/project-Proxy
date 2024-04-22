@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\CartController;
+
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::delete('/admin/cart/destroy/{id}', [CartController::class, 'destroy'])->name('api.cart.destroy');
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+
+
+});
+
+
+
+
+    
